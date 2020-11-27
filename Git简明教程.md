@@ -604,6 +604,10 @@ ___
   rStudyNotes     git@github.com:Createlzh/Study-Notes.git (push)
   ```
 
+
+
+##### 将本地库修改推送到远程库
+
 * 使用<font color=red>`git push -u <shortName> <branchname>`</font>将当前分支推送到远程：
 
   ```shell
@@ -639,3 +643,46 @@ ___
   ```
 
   > 此时使用`git remote -v`会发现远程库已被命名为`origin`
+
+* 同上，每次本地提交后，就可以直接将本地`main`分支的最新修改推送到**Github**：
+
+  ```shell
+  git push origin main
+  ```
+
+
+
+##### 远程库修改拉取到本地
+
+* 如果远程库上的内容有更新，需要在本地同步：
+
+  1. 首先使用<font color=red>`git fetch <shortName> `</font>从远程仓库下载新分支和数据：
+
+     > 个人理解，这里只是把更新的信息下载下来，相当于得知了远程分支的更新
+
+     ```shell
+     $ git fetch origin
+     remote: Enumerating objects: 4, done.
+     remote: Counting objects: 100% (4/4), done.
+     remote: Compressing objects: 100% (2/2), done.
+     Unpacking objects: 100% (3/3), 656 bytes | 43.00 KiB/s, done.
+     remote: Total 3 (delta 1), reused 0 (delta 0), pack-reused 0
+     From github.com:Createlzh/Study-Notes
+        cc3cfa7..98764a2  main       -> origin/main
+     #最后一行说明main分支已经被更新
+     ```
+
+  2. 使用<font color=red>`git merge <shortName>/<branchname> `</font>将具体更新内容同步到本地：
+
+     > 要将更新进行合并，相当于将远程分支内容`merge`到`main`分支
+
+     ```shell
+     $ git merge origin/main
+     Updating cc3cfa7..98764a2
+     Fast-forward
+      test.md | 1 +
+      1 file changed, 1 insertion(+)
+      create mode 100644 test.md
+     ```
+
+     
