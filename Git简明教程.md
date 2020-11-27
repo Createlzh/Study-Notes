@@ -685,4 +685,15 @@ ___
       create mode 100644 test.md
      ```
 
-     
+
+
+## 更多内容
+
+> 参见马士兵Git教程[《Git&Github教程》](https://www.bilibili.com/video/BV185411L7xs?p=1)
+
+1. 邀请加入团队
+
+2. 跨团队合作
+3. 协同开发合作时冲突的解决办法
+4. …
+
