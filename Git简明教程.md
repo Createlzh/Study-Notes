@@ -82,6 +82,16 @@ ____
   Initialized empty Git repository ain D:/GitRepo/.git/
   ```
 
+* **注意：刚创建的git仓库默认的master分支要在第一次commit之后才会真正建立！**
+
+  > 此时使用`git branch`查看分支为空，使用`git branch <branchname>`创建新的分支会报错
+  >
+  > ```ascii
+  > fatal: Not a valid object name: 'master'
+  > ```
+  >
+  > 原因是master分支还没有真正建立，就像声明了个对象但没初始化一样
+
 
 
 ___
@@ -160,10 +170,16 @@ ____
 
 ### rm
 
-* 使用<font color=red>`git rm <file>`</font>将一个文件删除：
+* 使用<font color=red>`git rm <file>`</font>将一个文件标记为删除：
 
   ```shell
   git rm filetoremove.txt
+  ```
+
+  随后需要使用`git commit -m "message" <file>`来删除该文件：
+
+  ```shell
+  git commit -m "delete txt" filetoremove.txt
   ```
 
 * 使用<font color=red>`git rm --cached <file>`</font>来停止跟踪一个文件，但不删除文件：
@@ -441,6 +457,24 @@ ___
 
 
 
+### 分支移动和重命名
+
+* 使用<font color=red>`git branch -m/M <OldName> <NewName>`</font>来重命名分支
+
+  ```shell
+  git branch -m master main #从master改为main
+  ```
+
+  * <font color=red>`-m`</font>：
+
+    > Move/rename a branch and the corresponding reflog.
+
+  * <font color=red>`-M`</font>
+
+    > Move/rename a branch even if the new branch name already exists.
+
+
+
 ### 合并分支与合并冲突
 
 * 合并任意分支到**当前分支**<font color=red>`git merge <branchname>`</font>：
@@ -485,3 +519,123 @@ ___
 
 ## 远程仓库Github
 
+由于一些众所周知的原因，**Github**上传代码的默认分支由`master`变为了`main`。但**Git**本地分支仍旧为`master`，这就导致上传之后仓库有两个分支，还得手动合并，不如直接**把本地的分支也修改为`main`：**
+
+* 方法1：
+
+> 1. 新建`main`分支，并转至`main`分支
+>
+> ```shell
+> git checkout -b main
+> ```
+>
+> 2. 合并两个分支
+>
+> ```shell
+> git merge master
+> ```
+
+* 方法2：
+
+> 直接使用<font color=red>`git branch -m/M <OldName> <NewName>`</font>
+>
+> ```shell
+> git branch -m master main
+> ```
+
+
+
+### 配置SSH密钥
+
+> Git支持多种协议，默认的`git://`使用ssh，但也可以使用`https`等其他协议。使用`https`除了速度慢以外，还有个最大的麻烦是每次推送都必须输入口令，但是在某些只开放http端口的公司内部就无法使用`ssh`协议而只能用`https`。
+
+* 使用<font color=red>`ssh-keygen -t rsa -C "youremail@example.com"`</font>生成**SSH key**
+
+  ```shell
+  ssh-keygen -t rsa -C "zhihui.liao1@gmail.com"
+  ```
+
+  > 这里的使用Github上注册的邮箱
+
+  > 随后使用默认一直回车，成功后会在`~/`下生成`.ssh`文件夹，打开`id_rsa.pub`并复制里面的**key**
+
+* 登录**Github**并依次选择：
+
+  ```ascii
+  Account -> Settings -> SSH and GPG keys -> New SSH key
+  ```
+
+  > `Title`设置标题，可以自定义；在`Key`中粘贴在`id_rsa.pub`复制的密码
+
+* 为了验证是否成功<font color=red>`ssh -T git@github.com`</font>：
+
+  ```ascii
+  $ ssh -T git@github.com
+  The authenticity of host 'github.com (52.74.223.119)' can't be established.
+  RSA key fingerprint is SHA256:nThbg6k.
+  Are you sure you want to continue connecting (yes/no/[fingerprint])? yes               # 输入 yes
+  Warning: Permanently added 'github.com,52.74.223.119' (RSA) to the list of known hosts.
+  Hi tianqixin! You've successfully authenticated, but GitHub does not provide shell access. # 成功信息
+  ```
+
+  > 中间需要输入`yes`确认连接
+
+
+
+### 添加远程库
+
+> 先有本地库，后有远程库，关联远程库并将本地库推送至远程库
+
+* 在**Github**中新建库后，想要在本地**Git**中添加远程库：<font color=red>`git remote add <shortName> <git@server-name:path/repo-name.git>`</font>
+
+  ```shell
+  git remote add rStudyNotes git@github.com:Createlzh/Study-Notes.git
+  ```
+
+  > 添加后，远程库的名字就是`origin`，这是Git默认的叫法，也可以改成别的，但是`origin`这个名字一看就知道是远程库
+
+* 使用<font color=red>`git remote`</font>查看当前有哪些远程库，执行时加上<font color=red>`-v`</font>参数还可以看到实际链接地址
+
+  ```shell
+  $ git remote
+  rStudyNotes
+  $ git remote -v
+  rStudyNotes     git@github.com:Createlzh/Study-Notes.git (fetch)
+  rStudyNotes     git@github.com:Createlzh/Study-Notes.git (push)
+  ```
+
+* 使用<font color=red>`git push -u <shortName> <branchname>`</font>将当前分支推送到远程：
+
+  ```shell
+  git push -u origin main
+  ```
+
+  > 把当前分支`master`推送到远程
+  >
+  > 由于远程库是空的，我们第一次推送`main`分支时，加上了`-u`参数，Git不但会把本地的`main`分支内容推送的远程新的`master`分支，还会把本地的`main`分支和远程的`main`分支关联起来，在以后的推送或者拉取时就可以简化命令。
+
+  * 此后，每次本地提交后，就可以直接将本地`main`分支的最新修改推送到**Github**：
+
+    ```shell
+    git push origin main
+    ```
+
+    
+
+### 从远程库克隆
+
+> 先有远程库，然后创建本地库并从远程库克隆
+
+> 克隆操作可以完成：
+>
+> 1. 初始化本地库
+> 2. 将远程库的内容完整克隆到本地
+> 3. 替我们创建远程库的别名
+
+* 使用<font color=red>`git clone <git@server-name:path/repo-name.git> `</font>克隆本地库：
+
+  ```shell
+  git clone git@github.com:Createlzh/Study-Notes.git
+  ```
+
+  > 此时使用`git remote -v`会发现远程库已被命名为`origin`
