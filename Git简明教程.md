@@ -608,7 +608,7 @@ ___
 
 ##### 将本地库修改推送到远程库
 
-* 使用<font color=red>`git push -u <shortName> <branchname>`</font>将当前分支推送到远程：
+* 使用<font color=red>`git push <shortName> <branchname>`</font>将当前分支推送到远程：
 
   ```shell
   git push -u origin main
