@@ -1,2 +1,2 @@
 # Study-Notes
-Study notes for Markdown and Git
+Study notes for Markdown, Git, compiling etc.
