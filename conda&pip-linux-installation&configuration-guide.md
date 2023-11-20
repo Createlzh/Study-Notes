@@ -258,6 +258,24 @@ conda config --add channels https://mirrors.aliyun.com/pypi/simple/
 conda config --add channels http://pypi.douban.com/simple/ 
 ```
 
+### conda虚拟环境目录变更
+
+1. 默认状态下通过编辑主目录下的`.condarc`文件配置源
+
+   ```bash
+   # 切到主目录
+   cd
+   # 创建文件
+   vim ~/.condarc
+   # 查看envs_dirs的内容，若没有则新增
+   envs_dirs:
+     - /home/test1/.conda/envs
+     - /home/test2/.conda/envs
+   # 写入后保存退出，使用conda env list发现/home/test1/.conda/envs和/home/test2/.conda/envs路径下的虚拟环境已经包含在内了
+   ```
+
+2. 相同方法可以用于删除不需要的虚拟环境包含路径，只需要删除`.condarc`文件中的对应路径即可，注意**删除路径不等同于删除整个环境**
+
 ### 其他指令
 
 ```bash
